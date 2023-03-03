@@ -14,7 +14,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
     - name: Run private action
-      uses: ./action.yml
+      uses: ./
       with:
           energyplus-version: '22.1.0'
           energyplus-sha: 'ed759b17ee'
