@@ -1,0 +1,25 @@
+name: 'Install Energyplus'
+description: 'Installs EnergyPlus'
+inputs:
+  energyplus-version:
+    description: 'EnergyPlus major.minor.patch version'
+    required: true
+    default: 9.2.0
+  energyplus-sha:
+    description: 'EnergyPlus version SHA'
+    required: true
+    default: 921312fa1d
+  energyplus-install:
+    description: 'EnergyPlus major-minor-patch version'
+    default: 9-2-0
+    required: true
+  
+runs:
+  using: "composite"
+  steps:
+    - run: src/install.sh
+      shell: bash
+      env:
+        ENERGYPLUS_VERSION: ${{ inputs.energyplus-version }}
+        ENERGYPLUS_SHA: ${{ inputs.energyplus-sha }}
+        ENERGYPLUS_INSTALL_VERSION: ${{ inputs.energyplus-install }}
