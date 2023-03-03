@@ -21,4 +21,6 @@ jobs:
           energyplus-install: '22-1-0'
     - name: Display installed version
       shell: bash
-      run: echo "Installed EnergyPlusVersion $(energyplus --version)"
+      run: |
+        set -e
+        echo "Installed EnergyPlusVersion $(energyplus --version)"
