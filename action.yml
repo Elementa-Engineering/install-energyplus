@@ -17,7 +17,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: src/install.sh
+    - run: ./src/install.sh
       shell: bash
       env:
         ENERGYPLUS_VERSION: ${{ inputs.energyplus-version }}
