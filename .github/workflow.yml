@@ -1,0 +1,21 @@
+name: Run action on different operating systems
+on:
+  push
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Run private action
+      uses: ./action.yml
+      with:
+          energyplus-version: '22.1.0'
+          energyplus-sha: 'ed759b17ee'
+          energyplus-install: '22-1-0'
