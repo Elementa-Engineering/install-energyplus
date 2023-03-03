@@ -75,10 +75,17 @@ elif [[ "$OSTYPE" == "win"* || "$OSTYPE" == "msys"* ]]; then
   echo "Extracting and Copying files to... C:\\"
   powershell Expand-Archive -Path $ENERGYPLUS_DOWNLOAD_FILENAME.$EXT -DestinationPath C:\\
   powershell Rename-Item -Path c:\\$ENERGYPLUS_DOWNLOAD_FILENAME -NewName EnergyPlusV"$ENERGYPLUS_INSTALL_VERSION"
+  
   # extract extra downloads to destination
   DEST=C:\\EnergyPlusV"$ENERGYPLUS_INSTALL_VERSION"\\PreProcess\\IDFVersionUpdater
   echo "Extracting and Copying files to... $DEST"
   powershell Expand-Archive -Path $ATTCHNUM.zip -DestinationPath "$DEST" -Force
+  
+  # add EnergyPlus executable to the Windows path
+  $env:PATH += ;C:\EnergyPlusV$ENERGYPLUS_INSTALL_VERSION\energyplus.exe
+  $env:PATH += ;C:\EnergyPlusV$ENERGYPLUS_INSTALL_VERSION\EPMacro.exe
+  $env:PATH += ;C:\EnergyPlusV$ENERGYPLUS_INSTALL_VERSION\ExpandObjects.exe
+
   # cleanup
   rm -v $ENERGYPLUS_DOWNLOAD_FILENAME.$EXT
   rm -v $ATTCHNUM.zip
