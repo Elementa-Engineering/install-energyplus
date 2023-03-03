@@ -32,7 +32,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
   export ATTCHBASE=98
   export ATTCHNUM=8232
 elif [[ "$OSTYPE" == "win"* || "$OSTYPE" == "msys"* ]]; then
-  export EXT=zip
+  export EXT=exe
   export PLATFORM=Windows
   export ATTCHBASE=86
   export ATTCHNUM=8231
@@ -56,35 +56,30 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   sudo chmod -R a+rwx /usr/local/EnergyPlus-"$ENERGYPLUS_INSTALL_VERSION"/PreProcess/IDFVersionUpdater
   sudo chmod -R a+rwx /usr/local/EnergyPlus-"$ENERGYPLUS_INSTALL_VERSION"/ExampleFiles
   # cleanup
-  sudo rm "$ENERGYPLUS_DOWNLOAD_FILENAME".$EXT
+  sudo rm $ENERGYPLUS_DOWNLOAD_FILENAME.$EXT
   sudo rm $ATTCHNUM.zip
 elif [[ "$OSTYPE" == "darwin"* ]]; then
   # getting custom install script https://github.com/NREL/EnergyPlus/pull/7615
-  curl -SL -C - https://raw.githubusercontent.com/jmarrec/EnergyPlus/40afb275f66201db5305f54df6c070d0b0cb4fc3/cmake/qtifw/install_script.qs -o install_script.qs
-  sudo hdiutil attach "$ENERGYPLUS_DOWNLOAD_FILENAME".$EXT
-  sudo /Volumes/"$ENERGYPLUS_DOWNLOAD_FILENAME"/"$ENERGYPLUS_DOWNLOAD_FILENAME".app/Contents/MacOS/"$ENERGYPLUS_DOWNLOAD_FILENAME" --verbose --script install_script.qs
+  curl -SL -C - https://raw.githubusercontent.com/NREL/EnergyPlus/develop/cmake/qtifw/install_script.qs -o install_script.qs
+  open "$ENERGYPLUS_DOWNLOAD_FILENAME".$EXT
+  sudo /Volumes/$ENERGYPLUS_DOWNLOAD_FILENAME/$ENERGYPLUS_DOWNLOAD_FILENAME.app/Contents/MacOS/$ENERGYPLUS_DOWNLOAD_FILENAME --verbose --script install_script.qs Documentation=false ExampleFiles=false WeatherData=false Datasets=false Symlinks=false
   sudo tar zxvf $ATTCHNUM.zip -C /Applications/EnergyPlus-"$ENERGYPLUS_INSTALL_VERSION"/PreProcess
   sudo chmod -R a+rwx /Applications/EnergyPlus-"$ENERGYPLUS_INSTALL_VERSION"/PreProcess/IDFVersionUpdater
   sudo chmod -R a+rwx /Applications/EnergyPlus-"$ENERGYPLUS_INSTALL_VERSION"/ExampleFiles
   # cleanup
   sudo rm install_script.qs
-  sudo rm "$ENERGYPLUS_DOWNLOAD_FILENAME".$EXT
+  sudo rm $ENERGYPLUS_DOWNLOAD_FILENAME.$EXT
   sudo rm $ATTCHNUM.zip
 elif [[ "$OSTYPE" == "win"* || "$OSTYPE" == "msys"* ]]; then
-  # On windows, we are simply extracting the zip file to c:\\
-  echo "Extracting and Copying files to... C:\\"
-  powershell Expand-Archive -Path $ENERGYPLUS_DOWNLOAD_FILENAME.$EXT -DestinationPath C:\\
-  powershell Rename-Item -Path c:\\$ENERGYPLUS_DOWNLOAD_FILENAME -NewName EnergyPlusV"$ENERGYPLUS_INSTALL_VERSION"
+  powershell wget https://raw.githubusercontent.com/NREL/EnergyPlus/develop/cmake/qtifw/install_script.qs -OutFile install_script.qs
+  
+  # Install EnergyPlus
+  $ENERGYPLUS_DOWNLOAD_FILENAME.$EXT --verbose --script install_script.qs Documentation=false ExampleFiles=false WeatherData=false Datasets=false CreateStartMenu=false RegisterFileType=false
   
   # extract extra downloads to destination
   DEST=C:\\EnergyPlusV"$ENERGYPLUS_INSTALL_VERSION"\\PreProcess\\IDFVersionUpdater
   echo "Extracting and Copying files to... $DEST"
   powershell Expand-Archive -Path $ATTCHNUM.zip -DestinationPath "$DEST" -Force
-  
-  # add EnergyPlus executable to the Windows path
-  $env:PATH += ;C:\EnergyPlusV$ENERGYPLUS_INSTALL_VERSION\energyplus.exe
-  $env:PATH += ;C:\EnergyPlusV$ENERGYPLUS_INSTALL_VERSION\EPMacro.exe
-  $env:PATH += ;C:\EnergyPlusV$ENERGYPLUS_INSTALL_VERSION\ExpandObjects.exe
 
   # cleanup
   rm -v $ENERGYPLUS_DOWNLOAD_FILENAME.$EXT
