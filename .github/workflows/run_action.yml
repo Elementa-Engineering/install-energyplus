@@ -9,8 +9,7 @@ jobs:
     
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-
+        os: [ubuntu-latest]  # Incompatible with macos-latest, windows-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
