@@ -13,6 +13,9 @@ inputs:
     description: 'EnergyPlus major-minor-patch version'
     default: 9-2-0
     required: true
+  energyplus-tag:
+    description: 'EnergyPlus release tag (defaults to v{energyplus-version})'
+    required: false
   
 runs:
   using: "composite"
@@ -27,3 +30,4 @@ runs:
         ENERGYPLUS_VERSION: ${{ inputs.energyplus-version }}
         ENERGYPLUS_SHA: ${{ inputs.energyplus-sha }}
         ENERGYPLUS_INSTALL_VERSION: ${{ inputs.energyplus-install }}
+        ENERGYPLUS_TAG: ${{ inputs.energyplus-tag }}

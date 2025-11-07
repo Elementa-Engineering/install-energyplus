@@ -10,6 +10,9 @@ fi
 if [[ -z "${ENERGYPLUS_INSTALL_VERSION}" ]]; then
   export ENERGYPLUS_INSTALL_VERSION=9-2-0
 fi
+if [[ -z "${ENERGYPLUS_TAG}" ]]; then
+  export ENERGYPLUS_TAG=v$ENERGYPLUS_VERSION
+fi
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   if version_gt $ENERGYPLUS_VERSION 9.3.0; then
@@ -38,7 +41,7 @@ elif [[ "$OSTYPE" == "win"* || "$OSTYPE" == "msys"* ]]; then
   export ATTCHNUM="multipletransitionidfversionupdater-win.zip"
 fi
 # Download EnergyPlus executable
-ENERGYPLUS_DOWNLOAD_BASE_URL=https://github.com/NREL/EnergyPlus/releases/download/v$ENERGYPLUS_VERSION
+ENERGYPLUS_DOWNLOAD_BASE_URL=https://github.com/NREL/EnergyPlus/releases/download/$ENERGYPLUS_TAG
 ENERGYPLUS_DOWNLOAD_FILENAME=EnergyPlus-$ENERGYPLUS_VERSION-$ENERGYPLUS_SHA-$PLATFORM-x86_64
 ENERGYPLUS_DOWNLOAD_URL=$ENERGYPLUS_DOWNLOAD_BASE_URL/$ENERGYPLUS_DOWNLOAD_FILENAME.$EXT
 echo "$ENERGYPLUS_DOWNLOAD_URL"
