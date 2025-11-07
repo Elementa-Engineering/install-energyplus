@@ -10,6 +10,11 @@ This is a composite action and it runs on your chosen runner.
 - **`energyplus-sha`** (required): EnergyPlus version SHA (default: `921312fa1d`)
 - **`energyplus-install`** (required): EnergyPlus major-minor-patch version (default: `9-2-0`)
 - **`energyplus-tag`** (optional): EnergyPlus release tag. If not specified, defaults to `v{energyplus-version}`. Use this when the release tag differs from the standard format (e.g., `v24.2.0a` instead of `v24.2.0`)
+- **`energyplus-platform`** (optional): Platform string for the installer filename (e.g., `Linux-Ubuntu22.04`, `Darwin-macOS12.1`). If not specified, automatically determined based on version and OS:
+  - **Linux**: `Linux` (≤9.3.0), `Linux-Ubuntu18.04` (9.4.0-23.1.0), `Linux-Ubuntu22.04` (≥23.2.0)
+  - **macOS**: `Darwin` (≤9.3.0), `Darwin-macOS10.15` (9.4.0-23.1.0), `Darwin-macOS12.1` (≥23.2.0)
+  - **Windows**: `Windows` (all versions)
+- **`energyplus-arch`** (optional): Architecture string for the installer filename (e.g., `x86_64`, `arm64`). If not specified, automatically detected from system architecture using `uname -m`
 
 ## Usage
 
@@ -32,5 +37,18 @@ This is a composite action and it runs on your chosen runner.
     energyplus-sha: <appropriate-sha>
     energyplus-install: 24-2-0
     energyplus-tag: v24.2.0a
+```
+
+### Installation with custom platform override
+
+If the auto-detected platform string doesn't match the actual installer filename, you can override it:
+
+```yaml
+- uses: Elementa-Engineering/install-energyplus@main
+  with:
+    energyplus-version: 23.2.0
+    energyplus-sha: <appropriate-sha>
+    energyplus-install: 23-2-0
+    energyplus-platform: Linux-Ubuntu20.04  # Override auto-detection
 ```
 

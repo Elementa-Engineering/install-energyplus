@@ -16,6 +16,12 @@ inputs:
   energyplus-tag:
     description: 'EnergyPlus release tag (defaults to v{energyplus-version})'
     required: false
+  energyplus-platform:
+    description: 'EnergyPlus platform string (e.g., Linux-Ubuntu22.04, Darwin-macOS12.1). If not specified, auto-detected based on version and OS'
+    required: false
+  energyplus-arch:
+    description: 'EnergyPlus architecture (x86_64 or arm64). If not specified, auto-detected from system architecture'
+    required: false
   
 runs:
   using: "composite"
@@ -31,3 +37,5 @@ runs:
         ENERGYPLUS_SHA: ${{ inputs.energyplus-sha }}
         ENERGYPLUS_INSTALL_VERSION: ${{ inputs.energyplus-install }}
         ENERGYPLUS_TAG: ${{ inputs.energyplus-tag }}
+        ENERGYPLUS_PLATFORM: ${{ inputs.energyplus-platform }}
+        ENERGYPLUS_ARCH: ${{ inputs.energyplus-arch }}

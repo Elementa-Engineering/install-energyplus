@@ -9,16 +9,32 @@ jobs:
     
     strategy:
       matrix:
-        os: [ubuntu-latest]  # Incompatible with macos-latest, windows-latest
+        include:
+          - os: ubuntu-latest
+            energyplus-version: '22.1.0'
+            energyplus-sha: 'ed759b17ee'
+            energyplus-install: '22-1-0'
+            energyplus-tag: ''
+            energyplus-platform: ''
+          - os: ubuntu-latest
+            energyplus-version: '24.2.0'
+            energyplus-sha: '94a887817b'
+            energyplus-install: '24-2-0'
+            energyplus-tag: 'v24.2.0a'
+            energyplus-platform: 'Linux-Ubuntu24.04'
+            energyplus-arch: 'x86_64'
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
     - name: Run private action
       uses: ./
       with:
-          energyplus-version: '22.1.0'
-          energyplus-sha: 'ed759b17ee'
-          energyplus-install: '22-1-0'
+          energyplus-version: ${{ matrix.energyplus-version }}
+          energyplus-sha: ${{ matrix.energyplus-sha }}
+          energyplus-install: ${{ matrix.energyplus-install }}
+          energyplus-tag: ${{ matrix.energyplus-tag }}
+          energyplus-platform: ${{ matrix.energyplus-platform }}
+          energyplus-arch: ${{ matrix.energyplus-arch }}
     - name: Display installed version
       shell: bash
       run: |

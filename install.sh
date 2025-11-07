@@ -14,35 +14,84 @@ if [[ -z "${ENERGYPLUS_TAG}" ]]; then
   export ENERGYPLUS_TAG=v$ENERGYPLUS_VERSION
 fi
 
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  if version_gt $ENERGYPLUS_VERSION 9.3.0; then
+# Auto-detect or use provided architecture
+if [[ -z "${ENERGYPLUS_ARCH}" ]]; then
+  # Detect system architecture
+  ARCH=$(uname -m)
+  case "$ARCH" in
+    x86_64|amd64)
+      export ENERGYPLUS_ARCH=x86_64
+      ;;
+    aarch64|arm64)
+      export ENERGYPLUS_ARCH=arm64
+      ;;
+    *)
+      # Default to x86_64 for unknown architectures
+      export ENERGYPLUS_ARCH=x86_64
+      ;;
+  esac
+else
+  export ENERGYPLUS_ARCH=$ENERGYPLUS_ARCH
+fi
+
+# Allow override of platform string if provided
+if [[ -z "${ENERGYPLUS_PLATFORM}" ]]; then
+  # Auto-detect platform based on OS and version
+  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     export EXT="sh"
-    export PLATFORM=Linux-Ubuntu18.04
-  else
+    if version_gt $ENERGYPLUS_VERSION 23.1.0; then
+      # Newer versions (23.2+) use Ubuntu22.04
+      export PLATFORM=Linux-Ubuntu22.04
+    elif version_gt $ENERGYPLUS_VERSION 9.3.0; then
+      # Versions 9.4.0 through 23.1.0 use Ubuntu18.04
+      export PLATFORM=Linux-Ubuntu18.04
+    else
+      # Versions 9.3.0 and earlier use just Linux
+      export PLATFORM=Linux
+    fi
+    export ATTCHBASE=67022360382
+    export ATTCHNUM="multipletransitionidfversionupdater-lin.tar.gz"
+  elif [[ "$OSTYPE" == "darwin"* ]]; then
+    export EXT=dmg
+    if version_gt $ENERGYPLUS_VERSION 23.1.0; then
+      # Newer versions (23.2+) use macOS12.1
+      export PLATFORM=Darwin-macOS12.1
+    elif version_gt $ENERGYPLUS_VERSION 9.3.0; then
+      # Versions 9.4.0 through 23.1.0 use macOS10.15
+      export PLATFORM=Darwin-macOS10.15
+    else
+      # Versions 9.3.0 and earlier use just Darwin
+      export PLATFORM=Darwin
+    fi
+    export ATTCHBASE=67022360547
+    export ATTCHNUM="idfversionupdater-macos-v8.4.0.zip"
+  elif [[ "$OSTYPE" == "win"* || "$OSTYPE" == "msys"* ]]; then
+    export EXT=zip
+    export PLATFORM=Windows
+    export ATTCHBASE=67022360088
+    export ATTCHNUM="multipletransitionidfversionupdater-win.zip"
+  fi
+else
+  # Use the provided platform override
+  export PLATFORM=$ENERGYPLUS_PLATFORM
+  # Still need to set EXT based on OS type
+  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     export EXT="sh"
-    export PLATFORM=Linux
-  fi
-  export ATTCHBASE=67022360382
-  export ATTCHNUM="multipletransitionidfversionupdater-lin.tar.gz"
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-  if version_gt $ENERGYPLUS_VERSION 9.3.0; then
+    export ATTCHBASE=67022360382
+    export ATTCHNUM="multipletransitionidfversionupdater-lin.tar.gz"
+  elif [[ "$OSTYPE" == "darwin"* ]]; then
     export EXT=dmg
-    export PLATFORM=Darwin-macOS10.15
-  else
-    export EXT=dmg
-    export PLATFORM=Darwin
+    export ATTCHBASE=67022360547
+    export ATTCHNUM="idfversionupdater-macos-v8.4.0.zip"
+  elif [[ "$OSTYPE" == "win"* || "$OSTYPE" == "msys"* ]]; then
+    export EXT=zip
+    export ATTCHBASE=67022360088
+    export ATTCHNUM="multipletransitionidfversionupdater-win.zip"
   fi
-  export ATTCHBASE=67022360547
-  export ATTCHNUM="idfversionupdater-macos-v8.4.0.zip"
-elif [[ "$OSTYPE" == "win"* || "$OSTYPE" == "msys"* ]]; then
-  export EXT=zip
-  export PLATFORM=Windows
-  export ATTCHBASE=67022360088
-  export ATTCHNUM="multipletransitionidfversionupdater-win.zip"
 fi
 # Download EnergyPlus executable
 ENERGYPLUS_DOWNLOAD_BASE_URL=https://github.com/NREL/EnergyPlus/releases/download/$ENERGYPLUS_TAG
-ENERGYPLUS_DOWNLOAD_FILENAME=EnergyPlus-$ENERGYPLUS_VERSION-$ENERGYPLUS_SHA-$PLATFORM-x86_64
+ENERGYPLUS_DOWNLOAD_FILENAME=EnergyPlus-$ENERGYPLUS_VERSION-$ENERGYPLUS_SHA-$PLATFORM-$ENERGYPLUS_ARCH
 ENERGYPLUS_DOWNLOAD_URL=$ENERGYPLUS_DOWNLOAD_BASE_URL/$ENERGYPLUS_DOWNLOAD_FILENAME.$EXT
 echo "$ENERGYPLUS_DOWNLOAD_URL"
 curl --fail -SL -C - "$ENERGYPLUS_DOWNLOAD_URL" -o "$ENERGYPLUS_DOWNLOAD_FILENAME".$EXT
