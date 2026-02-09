@@ -7,6 +7,9 @@ inputs:
   energyplus-sha:
     description: 'EnergyPlus version SHA'
     required: true
+  energyplus-install:
+    description: 'Deprecated: no longer needed. Install version is now derived automatically from energyplus-version. This input is ignored.'
+    required: false
   energyplus-tag:
     description: 'EnergyPlus release tag (defaults to v{energyplus-version})'
     required: false
