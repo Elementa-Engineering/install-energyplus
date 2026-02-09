@@ -54,6 +54,9 @@ else
 fi
 
 # Auto-detect platform if not provided
+# NOTE: EnergyPlus release asset naming is not fully consistent across versions,
+# especially for macOS. The auto-detection below covers the most common patterns.
+# For macOS arm64, it is strongly recommended to set energyplus-platform explicitly.
 if [[ -z "${ENERGYPLUS_PLATFORM:-}" ]]; then
   if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     if version_gt "$ENERGYPLUS_VERSION" 23.1.0; then
@@ -64,12 +67,22 @@ if [[ -z "${ENERGYPLUS_PLATFORM:-}" ]]; then
       PLATFORM=Linux
     fi
   elif [[ "$OSTYPE" == "darwin"* ]]; then
-    if version_gt "$ENERGYPLUS_VERSION" 23.1.0; then
-      PLATFORM=Darwin-macOS12.1
-    elif version_gt "$ENERGYPLUS_VERSION" 9.3.0; then
-      PLATFORM=Darwin-macOS10.15
+    if [[ "$ENERGYPLUS_ARCH" == "arm64" ]]; then
+      # arm64 macOS builds use different platform strings than x86_64
+      if version_gt "$ENERGYPLUS_VERSION" 23.2.0; then
+        PLATFORM=Darwin-macOS13
+      else
+        PLATFORM=Darwin-macOS12.1
+      fi
     else
-      PLATFORM=Darwin
+      # x86_64 macOS
+      if version_gt "$ENERGYPLUS_VERSION" 23.1.0; then
+        PLATFORM=Darwin-macOS12.1
+      elif version_gt "$ENERGYPLUS_VERSION" 9.3.0; then
+        PLATFORM=Darwin-macOS10.15
+      else
+        PLATFORM=Darwin
+      fi
     fi
   elif [[ "$OSTYPE" == "win"* || "$OSTYPE" == "msys"* ]]; then
     PLATFORM=Windows
@@ -79,7 +92,7 @@ else
 fi
 
 # Download EnergyPlus executable
-ENERGYPLUS_DOWNLOAD_BASE_URL="https://github.com/NREL/EnergyPlus/releases/download/${ENERGYPLUS_TAG}"
+ENERGYPLUS_DOWNLOAD_BASE_URL="https://github.com/NatLabRockies/EnergyPlus/releases/download/${ENERGYPLUS_TAG}"
 ENERGYPLUS_DOWNLOAD_FILENAME="EnergyPlus-${ENERGYPLUS_VERSION}-${ENERGYPLUS_SHA}-${PLATFORM}-${ENERGYPLUS_ARCH}"
 ENERGYPLUS_DOWNLOAD_URL="${ENERGYPLUS_DOWNLOAD_BASE_URL}/${ENERGYPLUS_DOWNLOAD_FILENAME}.${EXT}"
 echo "$ENERGYPLUS_DOWNLOAD_URL"

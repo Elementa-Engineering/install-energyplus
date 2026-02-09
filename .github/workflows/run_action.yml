@@ -24,6 +24,8 @@ jobs:
           - os: macos-latest
             energyplus-version: '22.1.0'
             energyplus-sha: 'ed759b17ee'
+            energyplus-platform: 'Darwin-macOS12.1'
+            energyplus-arch: 'arm64'
           - os: windows-latest
             energyplus-version: '22.1.0'
             energyplus-sha: 'ed759b17ee'
