@@ -1,37 +1,42 @@
 name: Run action on different operating systems
 on:
-  push
+  push:
+    branches: [main]
+  pull_request:
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 5
-    
+
     strategy:
       matrix:
         include:
           - os: ubuntu-latest
             energyplus-version: '22.1.0'
             energyplus-sha: 'ed759b17ee'
-            energyplus-install: '22-1-0'
-            energyplus-tag: ''
-            energyplus-platform: ''
           - os: ubuntu-latest
             energyplus-version: '24.2.0'
             energyplus-sha: '94a887817b'
-            energyplus-install: '24-2-0'
             energyplus-tag: 'v24.2.0a'
             energyplus-platform: 'Linux-Ubuntu24.04'
             energyplus-arch: 'x86_64'
+          - os: macos-latest
+            energyplus-version: '22.1.0'
+            energyplus-sha: 'ed759b17ee'
+            energyplus-platform: 'Darwin-macOS12.1'
+            energyplus-arch: 'arm64'
+          - os: windows-latest
+            energyplus-version: '22.1.0'
+            energyplus-sha: 'ed759b17ee'
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Run private action
       uses: ./
       with:
           energyplus-version: ${{ matrix.energyplus-version }}
           energyplus-sha: ${{ matrix.energyplus-sha }}
-          energyplus-install: ${{ matrix.energyplus-install }}
           energyplus-tag: ${{ matrix.energyplus-tag }}
           energyplus-platform: ${{ matrix.energyplus-platform }}
           energyplus-arch: ${{ matrix.energyplus-arch }}
