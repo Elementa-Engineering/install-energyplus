@@ -6,9 +6,8 @@ This is a composite action and it runs on your chosen runner.
 
 ## Inputs
 
-- **`energyplus-version`** (required): EnergyPlus major.minor.patch version (default: `9.2.0`)
-- **`energyplus-sha`** (required): EnergyPlus version SHA (default: `921312fa1d`)
-- **`energyplus-install`** (required): EnergyPlus major-minor-patch version (default: `9-2-0`)
+- **`energyplus-version`** (required): EnergyPlus major.minor.patch version (e.g., `9.2.0`)
+- **`energyplus-sha`** (required): EnergyPlus version SHA (e.g., `921312fa1d`)
 - **`energyplus-tag`** (optional): EnergyPlus release tag. If not specified, defaults to `v{energyplus-version}`. Use this when the release tag differs from the standard format (e.g., `v24.2.0a` instead of `v24.2.0`)
 - **`energyplus-platform`** (optional): Platform string for the installer filename (e.g., `Linux-Ubuntu22.04`, `Darwin-macOS12.1`). If not specified, automatically determined based on version and OS:
   - **Linux**: `Linux` (≤9.3.0), `Linux-Ubuntu18.04` (9.4.0-23.1.0), `Linux-Ubuntu22.04` (≥23.2.0)
@@ -25,7 +24,6 @@ This is a composite action and it runs on your chosen runner.
   with:
     energyplus-version: 9.2.0
     energyplus-sha: 921312fa1d
-    energyplus-install: 9-2-0
 ```
 
 ### Installation with custom tag (e.g., for version 24.2.0 with tag v24.2.0a)
@@ -34,8 +32,7 @@ This is a composite action and it runs on your chosen runner.
 - uses: Elementa-Engineering/install-energyplus@main
   with:
     energyplus-version: 24.2.0
-    energyplus-sha: <appropriate-sha>
-    energyplus-install: 24-2-0
+    energyplus-sha: 94a887817b
     energyplus-tag: v24.2.0a
 ```
 
@@ -48,7 +45,5 @@ If the auto-detected platform string doesn't match the actual installer filename
   with:
     energyplus-version: 23.2.0
     energyplus-sha: <appropriate-sha>
-    energyplus-install: 23-2-0
     energyplus-platform: Linux-Ubuntu20.04  # Override auto-detection
 ```
-

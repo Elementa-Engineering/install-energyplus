@@ -4,14 +4,8 @@ inputs:
   energyplus-version:
     description: 'EnergyPlus major.minor.patch version'
     required: true
-    default: 9.2.0
   energyplus-sha:
     description: 'EnergyPlus version SHA'
-    required: true
-    default: 921312fa1d
-  energyplus-install:
-    description: 'EnergyPlus major-minor-patch version'
-    default: 9-2-0
     required: true
   energyplus-tag:
     description: 'EnergyPlus release tag (defaults to v{energyplus-version})'
@@ -22,20 +16,23 @@ inputs:
   energyplus-arch:
     description: 'EnergyPlus architecture (x86_64 or arm64). If not specified, auto-detected from system architecture'
     required: false
-  
+
 runs:
   using: "composite"
   steps:
-    - run: echo Installing EnergyPlusV${{ inputs.energyplus-version }}...
+    - run: echo "Installing EnergyPlusV${ENERGYPLUS_VERSION}..."
       shell: bash
-    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      env:
+        ENERGYPLUS_VERSION: ${{ inputs.energyplus-version }}
+    - run: echo "${ACTION_PATH}" >> "$GITHUB_PATH"
       shell: bash
+      env:
+        ACTION_PATH: ${{ github.action_path }}
     - run: install.sh
       shell: bash
       env:
         ENERGYPLUS_VERSION: ${{ inputs.energyplus-version }}
         ENERGYPLUS_SHA: ${{ inputs.energyplus-sha }}
-        ENERGYPLUS_INSTALL_VERSION: ${{ inputs.energyplus-install }}
         ENERGYPLUS_TAG: ${{ inputs.energyplus-tag }}
         ENERGYPLUS_PLATFORM: ${{ inputs.energyplus-platform }}
         ENERGYPLUS_ARCH: ${{ inputs.energyplus-arch }}
