@@ -168,7 +168,14 @@ Controller.prototype.ComponentSelectionPageCallback = function() {
 Controller.prototype.LicenseAgreementPageCallback = function() {
   console.log("---- LICENSE AGREEMENT PAGE");
   logCurrentPage();
-  gui.currentPageWidget().AcceptLicenseRadioButton.setChecked(true);
+  var widget = gui.currentPageWidget();
+  if (widget.AcceptLicenseRadioButton) {
+    widget.AcceptLicenseRadioButton.setChecked(true);
+  } else if (widget.AcceptLicenseCheckBox) {
+    widget.AcceptLicenseCheckBox.setChecked(true);
+  } else {
+    console.log("Warning: Could not find license acceptance widget, proceeding anyway");
+  }
   gui.clickButton(buttons.NextButton);
 };
 
